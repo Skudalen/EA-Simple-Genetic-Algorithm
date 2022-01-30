@@ -1,25 +1,48 @@
 
 
-class Selecter:
+class Test:
     def __init__(self) -> None:
         pass
 
-class Fitnes:
-    def __init__(self) -> None:
+    def TEST_init_pop(self):
         pass
+
+    def TEST_evaluate_pop(self, pop):
+        return self.fitness(pop)
+
+    def TEST_do_terminate(self, pop_eval, gen_count):
+        pass
+
+    def TEST_select_parents(self, pop):
+        pass
+
+    def TEST_make_offsprings(self, parents):
+        pass
+
+    def TEST_select_survivors(self, old_pop, offsprings, pop_eval, offs_eval):
+        pass
+
+    def TEST_plot_progress(self):
+        pass
+
+    def TEST_plot_end_result(self):
+        pass
+
+    def run(self):
+        pass
+
 
 class GA:
-    def __init__(self, params, Selecter, Fitnes, do_crowding:bool) -> None:
+    def __init__(self, params, fitness:function, survival_selecter:function=None) -> None:
         self. params = params
-        self.Selecter = Selecter
-        self.Fitnes = Fitnes
-        self.do_crowding = do_crowding
+        self.fitness = fitness
+        self.survival_selecter = survival_selecter
 
     def init_pop(self):
         pass
 
     def evaluate_pop(self, pop):
-        pass
+        return self.fitness(pop)
 
     def do_terminate(self, pop_eval, gen_count):
         pass
@@ -31,7 +54,10 @@ class GA:
         pass
 
     def select_survivors(self, old_pop, offsprings, pop_eval, offs_eval):
-        pass
+        if self.survival_selecter:
+            return self.survival_selecter( old_pop, offsprings, pop_eval, offs_eval)
+        else: 
+            pass
 
     def plot_progress(self):
         pass

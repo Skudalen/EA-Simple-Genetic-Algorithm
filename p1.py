@@ -1,6 +1,7 @@
 import json
 import os
 import pandas as pd
+from ga import GA
 
 class Prep():
 
@@ -8,7 +9,7 @@ class Prep():
         pass
 
     def set_params(self, params:dict):
-        with open('params.json', 'w') as outfile:
+        with open('data/params.json', 'w') as outfile:
             json.dump(params, outfile)
 
     def format_dataset(self):
@@ -21,23 +22,43 @@ class Prep():
         #print(values_df)
 
 
-
-def main():
-
+def sine_fitness(pop):
     pass
+
+def feature_fitness(pop):
+    pass
+
+def crowding_survival(old_pop, offsprings, pop_eval, offs_eval):
+    pass
+
+
+
+
+
+
+
+
+def main(params):
+
+    algorithm = GA(params, fitness=sine_fitness)
+    #algorithm = GA(params, fitness=feature_fitness)
+    #algorithm = GA(params, fitness=sine_fitness, survival_selecter=crowding_survival)
+    #algorithm = GA(params, fitness=feature_fitness, survival_selecter=crowding_survival)
+    
+    pop, eval_log = algorithm.run()
+    
 
 if __name__ == '__main__':
     
-    prepper = Prep()
-    prepper.format_dataset()
+    Prepper = Prep()
+    Prepper.format_dataset()
 
     params = {
         'indiv_length': 15,
         'pop_size': 100,
         'p_m': 0.1,
         'p_c': 0.6,
-
     }
-    prepper.set_params(params)
+    Prepper.set_params(params)
 
-    main()
+    main(params)
