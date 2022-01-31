@@ -2,6 +2,7 @@ import json
 import os
 import pandas as pd
 from ga import GA
+import numpy as np
 
 class Prep():
 
@@ -27,7 +28,9 @@ def pop_to_real(pop):
 
 
 def sine_fitness(pop):
-    pass
+    pop_real_val = pop_to_real(pop)
+    sine_sum = pop_real_val.map(lambda x: np.sin(x)).sum()
+    return sine_sum
 
 def feature_fitness(pop):
     pass
