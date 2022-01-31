@@ -22,11 +22,12 @@ class Prep():
         values_df.to_csv('data/values.csv')
         #print(values_df)
 
+# HELP FUNCTIONS
 def pop_to_real(pop):
     pop_real_val = pop.map(lambda x: int(x, 2))
     return pop_real_val
 
-
+# INPUT FUNCTIONS
 def sine_fitness(pop):
     pop_real_val = pop_to_real(pop)
     sine_sum = pop_real_val.map(lambda x: np.sin(x)).sum()
@@ -37,10 +38,6 @@ def feature_fitness(pop):
 
 def crowding_survival(old_pop, offsprings, pop_eval, offs_eval):
     pass
-
-
-
-
 
 
 
@@ -58,7 +55,7 @@ def main(params):
 if __name__ == '__main__':
     
     params = {
-        'indiv_length': 15,
+        'indiv_len': 15,
         'pop_size': 100,
         'p_m': 0.1,
         'p_c': 0.6,
