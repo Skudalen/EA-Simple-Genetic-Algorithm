@@ -22,14 +22,17 @@ class Prep():
         values_df.to_csv('data/values.csv')
         #print(values_df)
 
-# HELP FUNCTIONS
+# HELP FUNCTIONS -----------------------------
 def pop_to_real(pop):
     pop_real_val = pop.map(lambda x: int(x, 2))
     return pop_real_val
 
-# INPUT FUNCTIONS
-def sine_fitness(pop):
-    pop_real_val = pop_to_real(pop)
+# INPUT FUNCTIONS ----------------------------
+def sine_fitness(pop, params):
+    max_sine_exp = params['max_sine_exp']
+    indiv_len = params['indiv_len']
+    scalar = max_sine_exp - indiv_len 
+    pop_real_val = np.power(pop_to_real(pop), scalar)   # fitting the values into [0,128] bit interval
     sine_sum = pop_real_val.map(lambda x: np.sin(x)).sum()
     return sine_sum
 
@@ -59,6 +62,7 @@ if __name__ == '__main__':
         'pop_size': 100,
         'p_m': 0.1,
         'p_c': 0.6,
+        'max_sine_exp': 7
     }
 
     Prepper = Prep()
