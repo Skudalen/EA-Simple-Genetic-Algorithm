@@ -39,6 +39,7 @@ class GA:
         self.survival_selecter = survival_selecter
 
     def init_pop(self):
+        
         pass
 
     def evaluate_pop(self, pop):

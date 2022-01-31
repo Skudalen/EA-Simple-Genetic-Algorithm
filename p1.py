@@ -21,6 +21,10 @@ class Prep():
         values_df.to_csv('data/values.csv')
         #print(values_df)
 
+def pop_to_real(pop):
+    pop_real_val = pop.map(lambda x: int(x, 2))
+    return pop_real_val
+
 
 def sine_fitness(pop):
     pass
@@ -50,15 +54,15 @@ def main(params):
 
 if __name__ == '__main__':
     
-    Prepper = Prep()
-    Prepper.format_dataset()
-
     params = {
         'indiv_length': 15,
         'pop_size': 100,
         'p_m': 0.1,
         'p_c': 0.6,
     }
+
+    Prepper = Prep()
+    Prepper.format_dataset()    
     Prepper.set_params(params)
 
     main(params)
