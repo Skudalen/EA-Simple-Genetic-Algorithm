@@ -1,4 +1,5 @@
-
+import random
+import numpy as np
 
 class Test:
     def __init__(self) -> None:
@@ -39,8 +40,11 @@ class GA:
         self.survival_selecter = survival_selecter
 
     def init_pop(self):
-        
-        pass
+        indiv_len = self.params['indiv_len']
+        pop_size = self.params['pop_size']
+        rand_ints = [random.getrandbits(indiv_len) for x in range(pop_size)]
+        pop = rand_ints.map(lambda x: np.binary_repr(x))
+        return pop
 
     def evaluate_pop(self, pop):
         return self.fitness(pop)
