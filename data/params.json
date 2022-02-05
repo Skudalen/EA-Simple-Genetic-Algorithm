@@ -1,1 +1,1 @@
-{"indiv_length": 15, "pop_size": 100, "p_m": 0.1, "p_c": 0.6}
+{"indiv_len": 10, "pop_size": 10, "num_parents": 10, "p_m": 0.1, "p_c": 0.6, "max_sine_exp": 7}

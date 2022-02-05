@@ -1,4 +1,5 @@
 import random
+from typing import Callable
 import numpy as np
 
 class Test:
@@ -34,26 +35,36 @@ class Test:
 
 
 class GA:
-    def __init__(self, params, fitness:function, survival_selecter:function=None) -> None:
-        self. params = params
+    def __init__(self, params, fitness:Callable, survival_selecter:Callable=None) -> None:
+        self.params = params
         self.fitness = fitness
         self.survival_selecter = survival_selecter
 
     def init_pop(self):
-        indiv_len = self.params['indiv_len']
-        pop_size = self.params['pop_size']
-        rand_ints = [random.getrandbits(indiv_len) for x in range(pop_size)]
-        pop = rand_ints.map(lambda x: np.binary_repr(x))
+        self.indiv_len = self.params['indiv_len']
+        self.pop_size = self.params['pop_size']
+        rand_ints = [random.getrandbits(self.indiv_len) for x in range(self.pop_size)]
+        pop = list(map(lambda x: np.binary_repr(x, self.indiv_len), rand_ints))
         return pop
 
     def evaluate_pop(self, pop):
-        return self.fitness(pop)
+        return self.fitness(pop, self.params)
 
     def do_terminate(self, pop_eval, gen_count):
         pass
 
     def select_parents(self, pop):
-        pass
+        # Stocastic
+        self.num_parents = self.params['num_parents']
+        pop_fitness = self.evaluate_pop(pop)
+        self.fitness_dict = {pop[i]:pop_fitness[i] for i in range(self.pop_size)}
+        fitness_sum = sum(pop_fitness)
+        weights = pop_fitness / fitness_sum
+        print('Weights used to select parents based on normalized fitness:', weights)
+        parents = random.choices(pop, weights=weights, k=self.num_parents)
+        return parents
+
+
 
     def make_offsprings(self, parents):
         pass
