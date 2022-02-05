@@ -66,13 +66,13 @@ class GA:
         parents = random.choices(pop, weights=weights, k=self.num_parents)
         return parents
 
-    def crossover(self, pop):
+    def crossover(self, parents):
         self.p_c = self.params['p_c']
         offspring = []
 
         for i in range(self.pop_size-1):
-            parent1 = pop[i]
-            parent2 = pop[i+1]
+            parent1 = parents[i]
+            parent2 = parents[i+1]
             crosspoint = None
             for k in range(1, self.indiv_len-1):
                 temp = random.choices([1, 0], weights=[self.p_c, 1 - self.p_c])
@@ -87,6 +87,16 @@ class GA:
                 offspring.extend([parent1, parent2])
         return offspring
 
+    def mutate(self, offspring:list):
+        self.p_m = self.params['p_m']
+        offspring_mod = []
+        for indiv in offspring:
+            for i in range(len(indiv)):
+                temp = random.choices([1, 0], weights=[self.p_m, 1 - self.p_m])
+                if temp == 1:
+                    indiv[i] = 1 if indiv[i] == 0 else 0
+        return offspring_mod
+        
     def make_offsprings(self, parents):
         pass
 
