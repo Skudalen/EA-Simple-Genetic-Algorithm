@@ -1,5 +1,7 @@
+from audioop import cross
 import random
 from typing import Callable
+from matplotlib.pyplot import step
 import numpy as np
 
 class Test:
@@ -64,7 +66,26 @@ class GA:
         parents = random.choices(pop, weights=weights, k=self.num_parents)
         return parents
 
+    def crossover(self, pop):
+        self.p_c = self.params['p_c']
+        offspring = []
 
+        for i in range(self.pop_size-1):
+            parent1 = pop[i]
+            parent2 = pop[i+1]
+            crosspoint = None
+            for k in range(1, self.indiv_len-1):
+                temp = random.choices([1, 0], weights=[self.p_c, 1 - self.p_c])
+                if temp == 1:
+                    crosspoint = k
+                    break
+            if crosspoint:
+                child1 = parent1[:crosspoint] + parent2[crosspoint:]
+                child2 = parent2[:crosspoint] + parent1[crosspoint:]
+                offspring.extend([child1, child2])
+            else:
+                offspring.extend([parent1, parent2])
+        return offspring
 
     def make_offsprings(self, parents):
         pass
