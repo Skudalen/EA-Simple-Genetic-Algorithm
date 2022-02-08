@@ -41,10 +41,14 @@ class GA:
         self.params = params
         self.fitness = fitness
         self.survival_selecter = survival_selecter
-
-    def init_pop(self):
+        # Unpack params 
         self.indiv_len = self.params['indiv_len']
         self.pop_size = self.params['pop_size']
+        self.p_c = self.params['p_c']
+        self.num_parents = self.params['num_parents']
+        self.p_m = self.params['p_m']
+
+    def init_pop(self):
         rand_ints = [random.getrandbits(self.indiv_len) for x in range(self.pop_size)]
         pop = list(map(lambda x: np.binary_repr(x, self.indiv_len), rand_ints))
         return pop
@@ -57,7 +61,6 @@ class GA:
 
     def select_parents(self, pop):
         # Stocastic
-        self.num_parents = self.params['num_parents']
         pop_fitness = self.evaluate_pop(pop)
         self.fitness_dict = {pop[i]:pop_fitness[i] for i in range(self.pop_size)}
         fitness_sum = sum(pop_fitness)
@@ -67,36 +70,36 @@ class GA:
         return parents
 
     def crossover(self, parents):
-        self.p_c = self.params['p_c']
-        offspring = []
-
-        for i in range(self.pop_size-1):
+        offsprings = []
+        for i in range(0, self.num_parents-1, 2):
+            #print(i)
             parent1 = parents[i]
             parent2 = parents[i+1]
             crosspoint = None
             for k in range(1, self.indiv_len-1):
                 temp = random.choices([1, 0], weights=[self.p_c, 1 - self.p_c])
-                if temp == 1:
+                #print(temp)
+                if temp[0] == 1:
                     crosspoint = k
                     break
+                #print(crosspoint)
             if crosspoint:
                 child1 = parent1[:crosspoint] + parent2[crosspoint:]
                 child2 = parent2[:crosspoint] + parent1[crosspoint:]
-                offspring.extend([child1, child2])
+                offsprings.extend([child1, child2])
             else:
-                offspring.extend([parent1, parent2])
-        return offspring
+                offsprings.extend([parent1, parent2])
+        return offsprings
 
-    def mutate(self, offspring:list):
-        self.p_m = self.params['p_m']
+    def mutate(self, offsprings:list):
         offspring_mod = []
-        for indiv in offspring:
+        for indiv in offsprings:
             for i in range(len(indiv)):
                 temp = random.choices([1, 0], weights=[self.p_m, 1 - self.p_m])
                 if temp == 1:
                     indiv[i] = 1 if indiv[i] == 0 else 0
         return offspring_mod
-        
+
     def make_offsprings(self, parents):
         pass
 

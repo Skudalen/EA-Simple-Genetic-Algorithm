@@ -53,12 +53,21 @@ def main(params):
     #algorithm = GA(params, fitness=feature_fitness, survival_selecter=crowding_survival)
     
     # TEST
-    pop = algorithm.init_pop()
-    print(pop)
+    #pop = algorithm.init_pop()
+    #print(pop)
 
-    parents = algorithm.select_parents(pop)
-    print(parents, len(parents))
+    #parents = algorithm.select_parents(pop)
+    #print(parents, len(parents))
 
+    dummy_parents = ['11111', '00000']
+
+    # Crossover
+    crossover_offsprings = algorithm.crossover(dummy_parents)
+    print(crossover_offsprings)
+
+    # Mutation
+    mutation_offsprings = algorithm.mutate(dummy_parents)
+    print(mutation_offsprings)
 
 
     #pop, eval_log = algorithm.run()
@@ -68,7 +77,7 @@ if __name__ == '__main__':
     params = {
         'indiv_len': 10,
         'pop_size': 10,     # Has to be even
-        'num_parents':10,
+        'num_parents':2,
         'p_m': 0.1,
         'p_c': 0.6,
         'max_sine_exp': 7
