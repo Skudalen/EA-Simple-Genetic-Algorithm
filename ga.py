@@ -92,13 +92,18 @@ class GA:
         return offsprings
 
     def mutate(self, offsprings:list):
-        offspring_mod = []
+        offsprings_mod = []
         for indiv in offsprings:
+            new_indiv = indiv
             for i in range(len(indiv)):
                 temp = random.choices([1, 0], weights=[self.p_m, 1 - self.p_m])
-                if temp == 1:
-                    indiv[i] = 1 if indiv[i] == 0 else 0
-        return offspring_mod
+                if temp[0] == 1:
+                    if new_indiv[i] == '0': 
+                        new_indiv = indiv[:i] + '1' + indiv[i+1:]  
+                    else: 
+                        new_indiv = indiv[:i] + '0' + indiv[i+1:]
+            offsprings_mod.append(new_indiv)
+        return offsprings_mod
 
     def make_offsprings(self, parents):
         pass

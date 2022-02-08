@@ -78,7 +78,7 @@ if __name__ == '__main__':
         'indiv_len': 10,
         'pop_size': 10,     # Has to be even
         'num_parents':2,
-        'p_m': 0.1,
+        'p_m': 0.3,
         'p_c': 0.6,
         'max_sine_exp': 7
     }
