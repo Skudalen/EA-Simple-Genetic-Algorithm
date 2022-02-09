@@ -65,7 +65,6 @@ class GA:
         self.fitness_dict = {pop[i]:pop_fitness[i] for i in range(self.pop_size)}
         fitness_sum = sum(pop_fitness)
         weights = pop_fitness / fitness_sum
-        print(pop_fitness)
         print('\nWeights used to select parents based on normalized fitness:\n', weights)
         parents = random.choices(pop, weights=weights, k=self.num_parents)
         return parents

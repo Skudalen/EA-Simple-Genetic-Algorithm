@@ -34,7 +34,7 @@ def sine_fitness(pop, params):
     scalar = 2 ** (max_sine_exp - indiv_len) 
     pop_real_val = np.power(pop_to_real(pop), scalar)   # fitting the values into [0,128] bit interval
     pop_fitness = list(map(lambda x: np.sin(x), pop_real_val))
-    pop_fitness = pop_fitness + abs(min(pop_fitness))
+    pop_fitness = [ x+1 for x in pop_fitness]
     return pop_fitness
 
 def feature_fitness(pop):
