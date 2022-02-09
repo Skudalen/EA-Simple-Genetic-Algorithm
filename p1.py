@@ -39,9 +39,6 @@ def sine_fitness(pop, params):
 def feature_fitness(pop):
     pass
 
-def crowding_survival(old_pop, offsprings, pop_eval, offs_eval):
-    pass
-
 
 
 
@@ -53,22 +50,7 @@ def main(params):
     #algorithm = GA(params, fitness=feature_fitness, survival_selecter=crowding_survival)
     
     # TEST
-    #pop = algorithm.init_pop()
-    #print(pop)
-
-    #parents = algorithm.select_parents(pop)
-    #print(parents, len(parents))
-
-    dummy_parents = ['11111', '00000']
-
-    # Crossover
-    crossover_offsprings = algorithm.crossover(dummy_parents)
-    print(crossover_offsprings)
-
-    # Mutation
-    mutation_offsprings = algorithm.mutate(dummy_parents)
-    print(mutation_offsprings)
-
+    
 
     #pop, eval_log = algorithm.run()
 

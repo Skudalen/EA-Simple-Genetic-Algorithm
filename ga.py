@@ -65,7 +65,7 @@ class GA:
         self.fitness_dict = {pop[i]:pop_fitness[i] for i in range(self.pop_size)}
         fitness_sum = sum(pop_fitness)
         weights = pop_fitness / fitness_sum
-        print('Weights used to select parents based on normalized fitness:', weights)
+        print('Weights used to select parents based on normalized fitness:\n', weights)
         parents = random.choices(pop, weights=weights, k=self.num_parents)
         return parents
 
@@ -106,13 +106,15 @@ class GA:
         return offsprings_mod
 
     def make_offsprings(self, parents):
-        pass
+        offsprings = self.crossover(parents)
+        offsprings_mod = self.mutate(offsprings)
+        return offsprings_mod
 
-    def select_survivors(self, old_pop, offsprings, pop_eval, offs_eval):
+    def select_survivors(self, old_pop:list, offsprings:list, pop_eval:list, offs_eval:list):
         if self.survival_selecter:
-            return self.survival_selecter( old_pop, offsprings, pop_eval, offs_eval)
-        else: 
-            pass
+            return self.survival_selecter(old_pop, offsprings, pop_eval, offs_eval)
+        else:   # Default: generational survival selection 
+            return offsprings
 
     def plot_progress(self):
         pass
