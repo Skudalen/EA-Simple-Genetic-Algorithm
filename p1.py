@@ -40,7 +40,8 @@ def sine_fitness(pop, params):
 def feature_fitness(pop):
     pass
 
-
+def crowding_selection(pop):
+    pass
 
 
 def main(params):
