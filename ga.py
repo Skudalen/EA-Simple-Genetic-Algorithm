@@ -57,7 +57,8 @@ class GA:
         return self.fitness(pop, self.params)
 
     def do_terminate(self, pop_eval, gen_count):
-        pass
+        term = True if gen_count >= 10 else False
+        return term
 
     def select_parents(self, pop):
         # Stocastic
