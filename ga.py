@@ -69,7 +69,7 @@ class GA:
         _, pop_fitness = self.evaluate_pop(pop)
         pop_fitness = [x+1 for x in pop_fitness]
         fitness_sum = sum(pop_fitness)
-        weights = pop_fitness / fitness_sum
+        weights = np.divide(pop_fitness, fitness_sum)
         #print('\nWeights used to select parents based on normalized fitness:\n', weights)
         parents = random.choices(pop, weights=weights, k=self.num_parents)
         return parents
