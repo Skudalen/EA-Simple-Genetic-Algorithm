@@ -158,7 +158,7 @@ class GA:
         gen_count = 0
         pop_xvalues, pop_eval = self.evaluate_pop(pop)
         self.fitness_dict = {pop[i]:pop_eval[i] for i in range(self.pop_size)}
-        eval_log = {gen_count: [pop_xvalues, pop_eval]}
+        eval_log = {gen_count: [pop_xvalues, pop_eval, pop]}
         while not self.do_terminate(pop_eval, gen_count):
             parents = self.select_parents(pop)
             offsprings = self.make_offsprings(parents)
@@ -169,6 +169,6 @@ class GA:
             pop_xvalues, pop_eval = self.evaluate_pop(pop)
             for i in range(self.pop_size):
                 self.fitness_dict[pop[i]] = pop_eval[i]
-            eval_log[gen_count] = [pop_xvalues, pop_eval]
+            eval_log[gen_count] = [pop_xvalues, pop_eval, pop]
         
-        return pop, eval_log
+        return eval_log
