@@ -1,7 +1,7 @@
 import json
 import os
 import pandas as pd
-from ga import GA
+from ga import *
 import numpy as np
 
 class Prep():
@@ -31,11 +31,15 @@ def pop_to_real(pop):
 def sine_fitness(pop, params):
     max_sine_exp = params['max_sine_exp']
     indiv_len = params['indiv_len']
-    scalar = 2 ** (max_sine_exp - indiv_len) 
-    pop_real_val = np.power(pop_to_real(pop), scalar)   # fitting the values into [0,128] bit interval
+    scalar = 2 ** (max_sine_exp - indiv_len)
+    pop_real_val = pop_to_real(pop) 
+    #print(pop_real_val)
+    #print(scalar)
+    pop_real_val = np.multiply(pop_real_val, scalar)   # fitting the values into [0,128] bit interval
+    #print(pop_real_val)
     pop_fitness = list(map(lambda x: np.sin(x), pop_real_val))
-    pop_fitness = [ x+1 for x in pop_fitness]
-    return pop_fitness
+    #pop_fitness = [x+1 for x in pop_fitness]
+    return pop_real_val, pop_fitness
 
 def feature_fitness(pop):
     pass
@@ -64,7 +68,8 @@ if __name__ == '__main__':
         'num_parents':2,
         'p_m': 0.3,
         'p_c': 0.6,
-        'max_sine_exp': 7
+        'max_sine_exp': 7,
+        'max_gen': 10
     }
 
     Prepper = Prep()

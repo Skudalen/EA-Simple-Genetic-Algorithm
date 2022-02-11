@@ -3,6 +3,9 @@ import random
 from typing import Callable
 from matplotlib.pyplot import step
 import numpy as np
+from ipywidgets import *
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider, Button
 
 class Test:
     def __init__(self) -> None:
@@ -47,6 +50,7 @@ class GA:
         self.p_c = self.params['p_c']
         self.num_parents = self.params['num_parents']
         self.p_m = self.params['p_m']
+        self.max_gen = self.params['max_gen']
 
     def init_pop(self):
         rand_ints = [random.getrandbits(self.indiv_len) for x in range(self.pop_size)]
@@ -54,16 +58,16 @@ class GA:
         return pop
 
     def evaluate_pop(self, pop):
-        return self.fitness(pop, self.params)
+        return self.fitness(pop, self.params)   # returns x list, y list
 
     def do_terminate(self, pop_eval, gen_count):
-        term = True if gen_count >= 10 else False
+        term = True if gen_count >= self.max_gen else False
         return term
 
     def select_parents(self, pop):
         # Stocastic
-        pop_fitness = self.evaluate_pop(pop)
-        self.fitness_dict = {pop[i]:pop_fitness[i] for i in range(self.pop_size)}
+        _, pop_fitness = self.evaluate_pop(pop)
+        pop_fitness = [x+1 for x in pop_fitness]
         fitness_sum = sum(pop_fitness)
         weights = pop_fitness / fitness_sum
         print('\nWeights used to select parents based on normalized fitness:\n', weights)
@@ -117,8 +121,34 @@ class GA:
         else:   # Default: generational survival selection 
             return offsprings
 
-    def plot_progress(self):
-        pass
+    def plot_sine_generations(self, eval_log):
+    
+        x_sine = np.linspace(0, 128, 1000)
+        y_sine = np.sin(x_sine)
+
+        fig, axs = plt.subplots(figsize=(5,3))
+        plt.subplots_adjust(bottom=0.35)
+        plt.title("Population plot")
+        plt.xlabel("x")
+        plt.ylabel("sin(x)")
+        plt.xlim(-1, 129)
+        plt.ylim(-1.5, 1.5)
+        line, = axs.plot(x_sine, y_sine)
+
+        i = 1
+        x = eval_log[i][0]
+        y = eval_log[i][1]
+
+        dots = axs.scatter(x, y, marker='o', color='orange')
+
+        ax = plt.axes([0.25, 0.1, 0.55, 0.05])
+        generation = Slider(ax, label='Generation', valmin=0, valmax=self.params['max_gen'], valstep=1, valinit=i)
+
+        def update(val):
+            gen = generation.val
+            dots.set_offsets(np.c_[eval_log[gen][0], eval_log[gen][1]])
+
+        generation.on_changed(update)
 
     def plot_end_result(self):
         pass
@@ -126,8 +156,9 @@ class GA:
     def run(self):
         pop = self.init_pop() # numpy array (pop_size, 1)
         gen_count = 0
-        pop_eval = self.evaluate_pop(pop)
-        eval_log = {gen_count: pop_eval}
+        pop_xvalues, pop_eval = self.evaluate_pop(pop)
+        self.fitness_dict = {pop[i]:pop_eval[i] for i in range(self.pop_size)}
+        eval_log = {gen_count: [pop_xvalues, pop_eval]}
         while not self.do_terminate(pop_eval, gen_count):
             parents = self.select_parents(pop)
             offsprings = self.make_offsprings(parents)
@@ -135,7 +166,9 @@ class GA:
             pop = self.select_survivors(pop, offsprings, pop_eval, offs_eval)
 
             gen_count += 1
-            pop_eval = self.evaluate_pop(pop)
-            eval_log[gen_count] = pop_eval
+            pop_xvalues, pop_eval = self.evaluate_pop(pop)
+            for i in range(self.pop_size):
+                self.fitness_dict[pop[i]] = pop_eval[i]
+            eval_log[gen_count] = [pop_xvalues, pop_eval]
         
         return pop, eval_log
