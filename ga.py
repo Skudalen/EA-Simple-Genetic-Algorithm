@@ -70,7 +70,7 @@ class GA:
         pop_fitness = [x+1 for x in pop_fitness]
         fitness_sum = sum(pop_fitness)
         weights = pop_fitness / fitness_sum
-        print('\nWeights used to select parents based on normalized fitness:\n', weights)
+        #print('\nWeights used to select parents based on normalized fitness:\n', weights)
         parents = random.choices(pop, weights=weights, k=self.num_parents)
         return parents
 
@@ -170,5 +170,6 @@ class GA:
             for i in range(self.pop_size):
                 self.fitness_dict[pop[i]] = pop_eval[i]
             eval_log[gen_count] = [pop_xvalues, pop_eval, pop]
+        print('Algorithm succsessfully executed')
         
         return eval_log
