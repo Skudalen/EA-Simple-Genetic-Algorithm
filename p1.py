@@ -39,6 +39,8 @@ def sine_fitness(pop, params):
     #print(pop_real_val)
     pop_fitness = list(map(lambda x: np.sin(x), pop_real_val))
     #pop_fitness = [x+1 for x in pop_fitness]
+    if params['sine_constraint']:
+        pop_fitness = list(map(lambda x: np.sin(x) if x >= 5 and x <= 10 else -1, pop_real_val))
     return pop_real_val, pop_fitness
 
 def feature_fitness(pop):
