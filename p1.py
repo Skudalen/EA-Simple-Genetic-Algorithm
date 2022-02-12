@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from ga import *
 import numpy as np
+import LinReg
 
 class Prep():
 
@@ -37,8 +38,23 @@ def sine_fitness(pop, params):
         pop_fitness = list(map(lambda x: np.sin(x) if x >= 5 and x <= 10 else -1.25, pop_real_val))
     return pop_real_val, pop_fitness
 
-def feature_fitness(pop):
-    pass
+def feature_fitness(pop, params):
+    linreg = LinReg.LinReg()
+    data_df = pd.read_csv('data/data.csv', index_col=[0])
+    values_df = pd.read_csv('data/values.csv', index_col=[0])
+    rmse_errors = []
+    for indiv in pop:
+        x = linreg.get_columns(data_df, indiv)
+        y = linreg.get_columns(values_df, indiv)
+        feats = y.shape[1]
+        x = x.reshape(feats, x.shape[0])
+        y = y.reshape(feats, y.shape[0])
+        error = linreg.get_fitness(x, y)
+        rmse_errors.append(error)
+    #   Scale from low-best to high-best
+    min_error, max_error = min(rmse_errors), max(rmse_errors)
+    fitness = list(map(lambda x: (max_error*1.2 - x), rmse_errors))
+    return rmse_errors, fitness
 
 def crowding_selection(pop):
     pass

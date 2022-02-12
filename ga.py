@@ -67,7 +67,9 @@ class GA:
     def select_parents(self, pop):
         # Stocastic
         _, pop_fitness = self.evaluate_pop(pop)
-        pop_fitness = [x+1 for x in pop_fitness]
+        if any(fit < 0 for fit in pop_fitness):
+            min_fit = min(pop_fitness)
+            pop_fitness = [x+min_fit for x in pop_fitness]
         fitness_sum = sum(pop_fitness)
         weights = np.divide(pop_fitness, fitness_sum)
         #print('\nWeights used to select parents based on normalized fitness:\n', weights)
