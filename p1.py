@@ -17,10 +17,8 @@ class Prep():
         dataset_path = str(os.getcwd() + '/data/p1_dataset.txt')
         data_df = pd.read_csv(dataset_path, header=None, skiprows=[1993])
         data_df.to_csv('data/data.csv')
-        #print(data_df)
         values_df = pd.read_csv(dataset_path, header=None, skiprows=1993)
         values_df.to_csv('data/values.csv')
-        #print(values_df)
 
 # HELP FUNCTIONS -----------------------------
 def pop_to_real(pop):
@@ -62,12 +60,13 @@ if __name__ == '__main__':
     
     params = {
         'indiv_len': 10,
-        'pop_size': 10,     # Has to be even
-        'num_parents':2,
-        'p_m': 0.3,
+        'pop_size': 8,              # Has to be even
+        'num_parents':8,            # Has to be <= pop_size
+        'p_m': 0.1,
         'p_c': 0.6,
-        'max_sine_exp': 7,
-        'max_gen': 10
+        'max_sine_exp': 7,          # 2^7 -> [0,128]
+        'max_gen': 10, 
+        'sine_constraint': False
     }
 
     Prepper = Prep()

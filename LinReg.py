@@ -9,8 +9,9 @@ from math import sqrt
 import random
 
 class LinReg():
+
     def __init__(self):
-        pass
+        self.gen_log = {}
 
     def train(self, data, y):
         model  = LinearRegression().fit(data, y)
