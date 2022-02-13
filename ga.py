@@ -6,6 +6,7 @@ import numpy as np
 from ipywidgets import *
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
+from scipy.special import entr
 
 
 class GA:
@@ -125,8 +126,10 @@ class GA:
             for i, char in enumerate(list(indiv)):
                 if char == '1':
                     char_count[i] += 1
+        #[print(key, value) for key, value in char_count.items()]
         probs = [char_count.get(i)/self.pop_size for i in char_count.keys()]
-        entropy = - sum([p * np.log2(p) for p in probs])
+        #entropy = - sum([p * np.log2(p) for p in probs])
+        entropy = entr(probs).sum()
         return entropy
 
     def run(self):
