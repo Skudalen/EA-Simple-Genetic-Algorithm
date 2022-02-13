@@ -7,37 +7,6 @@ from ipywidgets import *
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
 
-class Test:
-    def __init__(self) -> None:
-        pass
-
-    def TEST_init_pop(self):
-        pass
-
-    def TEST_evaluate_pop(self, pop):
-        return self.fitness(pop)
-
-    def TEST_do_terminate(self, pop_eval, gen_count):
-        pass
-
-    def TEST_select_parents(self, pop):
-        pass
-
-    def TEST_make_offsprings(self, parents):
-        pass
-
-    def TEST_select_survivors(self, old_pop, offsprings, pop_eval, offs_eval):
-        pass
-
-    def TEST_plot_progress(self):
-        pass
-
-    def TEST_plot_end_result(self):
-        pass
-
-    def run(self):
-        pass
-
 
 class GA:
     def __init__(self, params, fitness:Callable, survival_selecter:Callable=None) -> None:
@@ -112,9 +81,9 @@ class GA:
         offsprings_mod = self.mutate(offsprings)
         return offsprings_mod
 
-    def select_survivors(self, old_pop:list, offsprings:list, pop_eval:list, offs_eval:list):
+    def select_survivors(self, parents, offsprings, pop_weights, off_weights):
         if self.survival_selecter:
-            return self.survival_selecter(old_pop, offsprings, pop_eval, offs_eval)
+            return self.survival_selecter(parents, offsprings, pop_weights, off_weights)
         else:   # Default: generational survival selection 
             return offsprings
 
@@ -159,9 +128,8 @@ class GA:
         while not self.do_terminate(pop_fitness, gen_count):
             parents = self.select_parents(pop)
             offsprings = self.make_offsprings(parents)
-            offs_eval = self.evaluate_pop(offsprings) 
-            pop = self.select_survivors(pop, offsprings, pop_fitness, offs_eval)
-
+            _, off_fitness, off_weights = self.evaluate_pop(offsprings) 
+            pop = self.select_survivors(parents, offsprings, pop_weights, off_weights)
             gen_count += 1
             x, pop_fitness, pop_weights = self.evaluate_pop(pop)
             #for i in range(self.pop_size):

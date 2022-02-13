@@ -64,8 +64,28 @@ def feature_fitness(pop, params):
     _ = None
     return _, rmse_errors, weights
 
-def crowding_selection(pop):
-    pass
+def crowding_selection(parents, offsprings, pop_weights, off_weights):
+
+    def get_diff(a, b):
+        c = a ^ b
+        return c.count('1')
+
+    pop_size = len(offsprings)
+    new_pop = []
+    for i in range(0, pop_size-1, 2):
+        p1 = parents[i]
+        p2 = parents[i+1]
+        o1 = offsprings[i]
+        o2 = offsprings[i+1]
+        if get_diff(p1, o1) + get_diff(p2, o2) < get_diff(p1, o2) + get_diff(p2, o1):
+            chosen_1 =  p1 if pop_weights[i] > off_weights[i] else o1
+            chosen_2 =  p2 if pop_weights[i+1] > off_weights[i+1] else o1
+            new_pop.extend([chosen_1, chosen_2])
+        else:
+            chosen_1 =  p1 if pop_weights[i] > off_weights[i+1] else o2
+            chosen_2 =  p2 if pop_weights[i+1] > off_weights[i] else o1
+            new_pop.extend([chosen_1, chosen_2])
+    return new_pop
 
 
 def main(params):
