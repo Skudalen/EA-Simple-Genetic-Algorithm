@@ -119,6 +119,16 @@ class GA:
     def plot_end_result(self):
         pass
 
+    def get_pop_entropy(self, pop):
+        char_count = {k:0 for k in range(self.indiv_len)}
+        for indiv in pop:
+            for i, char in enumerate(list(indiv)):
+                if char == '1':
+                    char_count[i] += 1
+        probs = [char_count.get(i)/self.pop_size for i in char_count.keys()]
+        entropy = - sum([p * np.log2(p) for p in probs])
+        return entropy
+
     def run(self):
         pop = self.init_pop() # numpy array (pop_size, 1)
         gen_count = 0

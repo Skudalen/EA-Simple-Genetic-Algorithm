@@ -26,6 +26,8 @@ def pop_to_real(pop):
     pop_real_val = list(map(lambda x: int(x, 2), pop))
     return pop_real_val
 
+
+
 # INPUT FUNCTIONS ----------------------------
 def sine_fitness(pop, params):
     max_sine_exp = params['max_sine_exp']
@@ -64,11 +66,11 @@ def feature_fitness(pop, params):
     _ = None
     return _, rmse_errors, weights
 
-def crowding_selection(parents, offsprings, pop_weights, off_weights):
+def crowding_selection(parents:list, offsprings:list, pop_weights:list, off_weights:list):
 
     def get_diff(a, b):
-        c = a ^ b
-        return c.count('1')
+        c = int(a, 2) ^ int(b, 2)
+        return str(c).count('1')
 
     pop_size = len(offsprings)
     new_pop = []
