@@ -58,7 +58,8 @@ class GA:
         return pop
 
     def evaluate_pop(self, pop):
-        return self.fitness(pop, self.params)   # returns x list, y list
+        x, fitness, weights = self.fitness(pop, self.params)   # returns x-values list, fitness list, weights list
+        return x, fitness, weights
 
     def do_terminate(self, pop_eval, gen_count):
         term = True if gen_count >= self.max_gen else False
@@ -66,12 +67,9 @@ class GA:
 
     def select_parents(self, pop):
         # Stocastic
-        _, pop_fitness = self.evaluate_pop(pop)
-        if any(fit < 0 for fit in pop_fitness):
-            min_fit = min(pop_fitness)
-            pop_fitness = [x+min_fit for x in pop_fitness]
-        fitness_sum = sum(pop_fitness)
-        weights = np.divide(pop_fitness, fitness_sum)
+        _, _, weights = self.evaluate_pop(pop)
+        #fitness_sum = sum(pop_fitness)
+        #weights = np.divide(pop_fitness, fitness_sum)
         #print('\nWeights used to select parents based on normalized fitness:\n', weights)
         parents = random.choices(pop, weights=weights, k=self.num_parents)
         return parents
@@ -79,17 +77,14 @@ class GA:
     def crossover(self, parents):
         offsprings = []
         for i in range(0, self.num_parents-1, 2):
-            #print(i)
             parent1 = parents[i]
             parent2 = parents[i+1]
             crosspoint = None
             for k in range(1, self.indiv_len-1):
                 temp = random.choices([1, 0], weights=[self.p_c, 1 - self.p_c])
-                #print(temp)
                 if temp[0] == 1:
                     crosspoint = k
                     break
-                #print(crosspoint)
             if crosspoint:
                 child1 = parent1[:crosspoint] + parent2[crosspoint:]
                 child2 = parent2[:crosspoint] + parent1[crosspoint:]
@@ -158,20 +153,20 @@ class GA:
     def run(self):
         pop = self.init_pop() # numpy array (pop_size, 1)
         gen_count = 0
-        pop_xvalues, pop_eval = self.evaluate_pop(pop)
-        self.fitness_dict = {pop[i]:pop_eval[i] for i in range(self.pop_size)}
-        eval_log = {gen_count: [pop_xvalues, pop_eval, pop]}
-        while not self.do_terminate(pop_eval, gen_count):
+        x, pop_fitness, pop_weights = self.evaluate_pop(pop)
+        #self.fitness_dict = {pop[i]:pop_eval[i] for i in range(self.pop_size)}
+        eval_log = {gen_count: [pop, pop_weights, x, pop_fitness]}
+        while not self.do_terminate(pop_fitness, gen_count):
             parents = self.select_parents(pop)
             offsprings = self.make_offsprings(parents)
             offs_eval = self.evaluate_pop(offsprings) 
-            pop = self.select_survivors(pop, offsprings, pop_eval, offs_eval)
+            pop = self.select_survivors(pop, offsprings, pop_fitness, offs_eval)
 
             gen_count += 1
-            pop_xvalues, pop_eval = self.evaluate_pop(pop)
-            for i in range(self.pop_size):
-                self.fitness_dict[pop[i]] = pop_eval[i]
-            eval_log[gen_count] = [pop_xvalues, pop_eval, pop]
+            x, pop_fitness, pop_weights = self.evaluate_pop(pop)
+            #for i in range(self.pop_size):
+            #    self.fitness_dict[pop[i]] = pop_eval[i]
+            eval_log[gen_count] = [pop, pop_weights, x, pop_fitness]
         print('Algorithm succsessfully executed')
         
         return eval_log

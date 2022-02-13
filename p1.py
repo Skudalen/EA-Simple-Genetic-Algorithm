@@ -31,12 +31,16 @@ def sine_fitness(pop, params):
     max_sine_exp = params['max_sine_exp']
     indiv_len = params['indiv_len']
     scalar = 2 ** (max_sine_exp - indiv_len)
-    pop_real_val = pop_to_real(pop) 
-    pop_real_val = np.multiply(pop_real_val, scalar)   # fitting the values into [0,128] bit interval
+    pop_real_val = np.multiply(pop_to_real(pop), scalar)   # fitting the values into [0,128] bit interval
+    #   Get fitness
     pop_fitness = list(map(lambda x: np.sin(x), pop_real_val))
     if params['sine_constraint']:
         pop_fitness = list(map(lambda x: np.sin(x) if x >= 5 and x <= 10 else -1.25, pop_real_val))
-    return pop_real_val, pop_fitness
+    #   Make weights
+    min_, max_ = min(pop_fitness), max(pop_fitness)
+    weights = list(map(lambda x: (x-min_)/(max_-min_) if (max_-min_) > 0 else 1, pop_fitness))
+    weights = np.divide(weights, sum(weights))
+    return pop_real_val, pop_fitness, weights
 
 def feature_fitness(pop, params):
     linreg = LinReg.LinReg()
@@ -51,10 +55,14 @@ def feature_fitness(pop, params):
         y = y.reshape(feats, y.shape[0])
         error = linreg.get_fitness(x, y)
         rmse_errors.append(error)
-    #   Scale from low-best to high-best
-    min_error, max_error = min(rmse_errors), max(rmse_errors)
-    fitness = list(map(lambda x: (max_error*1.2 - x), rmse_errors))
-    return rmse_errors, fitness
+    # Scale from low-best to high-best
+    max_error = max(rmse_errors)
+    rev_error = list(map(lambda x: (max_error*1.05 - x), rmse_errors))
+    min_, max_ = min(rev_error), max(rev_error)
+    weights = list(map(lambda x: (x-min_)/(max_-min_), rev_error))
+    weights = np.divide(weights, sum(weights))
+    _ = None
+    return _, rmse_errors, weights
 
 def crowding_selection(pop):
     pass
