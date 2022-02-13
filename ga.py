@@ -133,8 +133,8 @@ class GA:
         pop = self.init_pop() # numpy array (pop_size, 1)
         gen_count = 0
         x, pop_fitness, pop_weights = self.evaluate_pop(pop)
-        #self.fitness_dict = {pop[i]:pop_eval[i] for i in range(self.pop_size)}
-        eval_log = {gen_count: [pop, pop_weights, x, pop_fitness]}
+        entropy = self.get_pop_entropy(pop)
+        eval_log = {gen_count: [pop, pop_weights, x, pop_fitness, entropy]}
         while not self.do_terminate(pop_fitness, gen_count):
             parents = self.select_parents(pop)
             offsprings = self.make_offsprings(parents)
@@ -142,9 +142,8 @@ class GA:
             pop = self.select_survivors(parents, offsprings, pop_weights, off_weights)
             gen_count += 1
             x, pop_fitness, pop_weights = self.evaluate_pop(pop)
-            #for i in range(self.pop_size):
-            #    self.fitness_dict[pop[i]] = pop_eval[i]
-            eval_log[gen_count] = [pop, pop_weights, x, pop_fitness]
+            entropy = self.get_pop_entropy(pop)
+            eval_log[gen_count] = [pop, pop_weights, x, pop_fitness, entropy]
         print('Algorithm succsessfully executed')
         
         return eval_log
