@@ -82,9 +82,9 @@ class GA:
         offsprings_mod = self.mutate(offsprings)
         return offsprings_mod
 
-    def select_survivors(self, parents, offsprings, pop_weights, off_weights):
+    def select_survivors(self, parents, offsprings, pop_weights, off_weights, is_high_best):
         if self.survival_selecter:
-            return self.survival_selecter(parents, offsprings, pop_weights, off_weights)
+            return self.survival_selecter(parents, offsprings, pop_weights, off_weights, is_high_best)
         else:   # Default: generational survival selection 
             return offsprings
 
@@ -135,18 +135,21 @@ class GA:
     def run(self):
         pop = self.init_pop() # numpy array (pop_size, 1)
         gen_count = 0
+        # Store data, gen 0
         x, pop_fitness, pop_weights = self.evaluate_pop(pop)
         entropy = self.get_pop_entropy(pop)
         eval_log = {gen_count: [pop, pop_weights, x, pop_fitness, entropy]}
+        # Evolution:
         while not self.do_terminate(pop_fitness, gen_count):
             parents = self.select_parents(pop)
             offsprings = self.make_offsprings(parents)
-            _, off_fitness, off_weights = self.evaluate_pop(offsprings) 
-            pop = self.select_survivors(parents, offsprings, pop_weights, off_weights)
+            _, off_fitness, off_weights = self.evaluate_pop(offsprings)
+            pop = self.select_survivors(parents, offsprings, pop_fitness, off_fitness, self.params['is_high_best'])
             gen_count += 1
+            # Store data, gen > 0
             x, pop_fitness, pop_weights = self.evaluate_pop(pop)
             entropy = self.get_pop_entropy(pop)
             eval_log[gen_count] = [pop, pop_weights, x, pop_fitness, entropy]
+
         print('Algorithm succsessfully executed')
-        
         return eval_log

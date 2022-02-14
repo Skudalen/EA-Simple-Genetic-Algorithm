@@ -59,18 +59,18 @@ def feature_fitness(pop, params):
         rmse_errors.append(error)
     # Scale from low-best to high-best
     max_error = max(rmse_errors)
-    rev_error = list(map(lambda x: (max_error*1.05 - x), rmse_errors))
+    rev_error = list(map(lambda x: (max_error - x)**2, rmse_errors))
     min_, max_ = min(rev_error), max(rev_error)
-    weights = list(map(lambda x: (x-min_)/(max_-min_), rev_error))
+    weights = list(map(lambda x: (x-min_)/(max_-min_) if (max_-min_) > 0 else 1, rev_error))
     weights = np.divide(weights, sum(weights))
     _ = None
     return _, rmse_errors, weights
 
-def crowding_selection(parents:list, offsprings:list, pop_weights:list, off_weights:list):
-
+def crowding_selection(parents:list, offsprings:list, pop_weights:list, off_weights:list, is_high_best:bool):
+    
     def get_diff(a, b):
         c = int(a, 2) ^ int(b, 2)
-        return str(c).count('1')
+        return "{0:b}".format(c).count('1')
 
     pop_size = len(offsprings)
     new_pop = []
@@ -80,12 +80,20 @@ def crowding_selection(parents:list, offsprings:list, pop_weights:list, off_weig
         o1 = offsprings[i]
         o2 = offsprings[i+1]
         if get_diff(p1, o1) + get_diff(p2, o2) < get_diff(p1, o2) + get_diff(p2, o1):
-            chosen_1 =  p1 if pop_weights[i] > off_weights[i] else o1
-            chosen_2 =  p2 if pop_weights[i+1] > off_weights[i+1] else o1
+            if is_high_best:
+                chosen_1 =  p1 if pop_weights[i] > off_weights[i] else o1
+                chosen_2 =  p2 if pop_weights[i+1] > off_weights[i+1] else o1
+            else:
+                chosen_1 =  p1 if pop_weights[i] < off_weights[i] else o1
+                chosen_2 =  p2 if pop_weights[i+1] < off_weights[i+1] else o1
             new_pop.extend([chosen_1, chosen_2])
         else:
-            chosen_1 =  p1 if pop_weights[i] > off_weights[i+1] else o2
-            chosen_2 =  p2 if pop_weights[i+1] > off_weights[i] else o1
+            if is_high_best:
+                chosen_1 =  p1 if pop_weights[i] > off_weights[i+1] else o2
+                chosen_2 =  p2 if pop_weights[i+1] > off_weights[i] else o1
+            else:
+                chosen_1 =  p1 if pop_weights[i] < off_weights[i+1] else o2
+                chosen_2 =  p2 if pop_weights[i+1] < off_weights[i] else o1
             new_pop.extend([chosen_1, chosen_2])
     return new_pop
 
@@ -96,11 +104,8 @@ def main(params):
     #algorithm = GA(params, fitness=feature_fitness)
     #algorithm = GA(params, fitness=sine_fitness, survival_selecter=crowding_survival)
     #algorithm = GA(params, fitness=feature_fitness, survival_selecter=crowding_survival)
-    
-    # TEST
-    
 
-    #pop, eval_log = algorithm.run()
+    #eval_log = algorithm.run()
 
 if __name__ == '__main__':
     
